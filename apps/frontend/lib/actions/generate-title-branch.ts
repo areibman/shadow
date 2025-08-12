@@ -1,6 +1,6 @@
 "use server";
 
-import { generateText } from "ai";
+import { generateText, LanguageModelV1 } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createAmazonBedrock } from "@ai-sdk/amazon-bedrock";
@@ -57,7 +57,7 @@ export async function generateTaskTitleAndBranch(
             }).chat(modelConfig.modelChoice);
 
     const { text: generatedText } = await generateText({
-      model,
+      model: model as LanguageModelV1,
       temperature: 0.3,
       prompt: generateTitlePrompt(userPrompt),
     });
