@@ -1,5 +1,6 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
+import { createAmazonBedrock } from "@ai-sdk/amazon-bedrock";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 // import { createGroq } from "@ai-sdk/groq";
 // import { createOllama } from "ollama-ai-provider";
@@ -43,6 +44,22 @@ export class ModelProvider {
         const openaiClient = createOpenAI({ apiKey: userApiKeys.openai });
         const model = openaiClient(modelId);
         console.log(`[MODEL_PROVIDER] Created OpenAI model: ${modelId}`);
+        return model;
+      }
+
+      case "amazonBedrock": {
+        if (!userApiKeys.amazonBedrock) {
+          throw new Error(
+            "Amazon Bedrock API key not provided. Please configure your key (AWS_BEARER_TOKEN_BEDROCK) in settings."
+          );
+        }
+        console.log("Creating Amazon Bedrock client with API key");
+
+        const amazonBedrockClient = createAmazonBedrock({
+          apiKey: userApiKeys.amazonBedrock,
+        });
+        const model = amazonBedrockClient(modelId) as unknown as LanguageModel;
+        console.log(`[MODEL_PROVIDER] Created Amazon Bedrock model: ${modelId}`);
         return model;
       }
 

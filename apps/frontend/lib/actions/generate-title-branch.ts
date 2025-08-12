@@ -3,6 +3,7 @@
 import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { createAmazonBedrock } from "@ai-sdk/amazon-bedrock";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import {
   cleanTitle,
@@ -43,6 +44,10 @@ export async function generateTaskTitleAndBranch(
           ? createAnthropic({ apiKey: apiKeys.anthropic })(
               modelConfig.modelChoice
             )
+          : modelConfig.provider === "amazonBedrock"
+            ? createAmazonBedrock({ apiKey: apiKeys.amazonBedrock })(
+                modelConfig.modelChoice
+              )
           : createOpenRouter({
               apiKey: apiKeys.openrouter!,
               headers: {

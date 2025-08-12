@@ -5,7 +5,7 @@ export interface LLMConfig {
   maxTokens?: number;
   temperature?: number;
   systemPrompt?: string;
-  provider: "anthropic" | "openai" | "openrouter" /* | "groq" | "ollama" */;
+  provider: ApiKeyProvider;
 }
 
 // Model Selection
@@ -23,6 +23,11 @@ export const AvailableModels = {
   CLAUDE_SONNET_4: "claude-sonnet-4-20250514",
   CLAUDE_3_5_HAIKU: "claude-3-5-haiku-20241022",
 
+  // Amazon Bedrock models
+  CLAUDE_SONNET_4_BEDROCK: "anthropic.claude-sonnet-4-20250514-v1:0",
+  CLAUDE_OPUS_4_BEDROCK: "anthropic.claude-opus-4-1-20250805-v1:0",
+  CLAUDE_HAIKU_3_5_BEDROCK: "anthropic.claude-3-5-haiku-20241022-v1:0",
+
   // OpenRouter models
   XAI_GROK_3: "x-ai/grok-3",
   MOONSHOT_KIMI_K2: "moonshotai/kimi-k2",
@@ -38,7 +43,7 @@ export type ModelType = (typeof AvailableModels)[keyof typeof AvailableModels];
 export interface ModelInfo {
   id: ModelType;
   name: string;
-  provider: "anthropic" | "openai" | "openrouter" /* | "groq" | "ollama" */;
+  provider: ApiKeyProvider;
 }
 
 export const ModelInfos: Record<ModelType, ModelInfo> = {
@@ -92,6 +97,25 @@ export const ModelInfos: Record<ModelType, ModelInfo> = {
     provider: "anthropic",
   },
 
+  // Amazon Bedrock models
+  [AvailableModels.CLAUDE_OPUS_4_BEDROCK]: {
+    id: AvailableModels.CLAUDE_OPUS_4_BEDROCK,
+    name: "Claude Opus 4.1",
+    provider: "amazonBedrock",
+  },
+  
+  [AvailableModels.CLAUDE_SONNET_4_BEDROCK]: {
+    id: AvailableModels.CLAUDE_SONNET_4_BEDROCK,
+    name: "Claude Sonnet 4",
+    provider: "amazonBedrock",
+  },
+
+  [AvailableModels.CLAUDE_HAIKU_3_5_BEDROCK]: {
+    id: AvailableModels.CLAUDE_HAIKU_3_5_BEDROCK,
+    name: "Claude Haiku 3.5",
+    provider: "amazonBedrock",
+  },
+
   // OpenRouter models
   [AvailableModels.XAI_GROK_3]: {
     id: AvailableModels.XAI_GROK_3,
@@ -130,9 +154,7 @@ export const ModelInfos: Record<ModelType, ModelInfo> = {
   },
 };
 
-export function getModelProvider(
-  model: ModelType
-): "anthropic" | "openai" | "openrouter" /* | "ollama" */ {
+export function getModelProvider(model: ModelType): ApiKeyProvider {
   return ModelInfos[model].provider;
 }
 
