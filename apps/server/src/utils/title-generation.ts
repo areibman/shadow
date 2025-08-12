@@ -22,6 +22,7 @@ export async function generateTaskTitleAndBranch(
       openai: undefined,
       anthropic: undefined,
       openrouter: undefined,
+      amazonBedrock: undefined,
     };
 
     // Get the main model to determine provider for mini model selection

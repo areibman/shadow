@@ -8,7 +8,7 @@ import TS from "tree-sitter-typescript";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Python = require("tree-sitter-python");
 import { ModelProvider } from "@/agent/llm/models/model-provider";
-import { ModelType, ApiKeys } from "@repo/types";
+import { ModelType, ApiKeys, ApiKeyProvider } from "@repo/types";
 import { CoreMessage, generateText, LanguageModel } from "ai";
 import { TaskModelContext } from "@/services/task-model-context";
 import { braintrustService } from "../../agent/llm/observability/braintrust-service";
@@ -17,14 +17,14 @@ import { createWorkspaceManager, type ToolExecutor } from "@/execution";
 // Configuration
 const TEMP = 0.15;
 
-function getHardcodedMiniModel(
-  provider: "anthropic" | "openai" | "openrouter"
-): ModelType {
+function getHardcodedMiniModel(provider: ApiKeyProvider): ModelType {
   switch (provider) {
     case "anthropic":
       return "claude-3-5-haiku-20241022";
     case "openai":
       return "gpt-4o-mini";
+    case "amazonBedrock":
+      return "anthropic.claude-3-5-haiku-20241022-v1:0";
     case "openrouter":
       return "x-ai/grok-3";
     default:

@@ -1,5 +1,5 @@
 import { getModelProvider } from "../llm/models";
-import type { ApiKeys } from "../api-keys";
+import type { ApiKeys, ApiKeyProvider } from "../api-keys";
 import type { ModelType } from "../llm/models";
 
 const WORD_LIMIT = 8;
@@ -50,7 +50,7 @@ export interface TitleGenerationConfig {
 }
 
 export function getTitleGenerationModel(config: TitleGenerationConfig): {
-  provider: "openai" | "anthropic" | "openrouter" /* | "ollama" */;
+  provider: ApiKeyProvider;
   modelChoice: string;
 } | null {
   const { apiKeys, fallbackModel } = config;
@@ -66,7 +66,7 @@ export function getTitleGenerationModel(config: TitleGenerationConfig): {
   }
 
   let modelChoice: string;
-  let provider: "openai" | "anthropic" | "openrouter" | "ollama";
+  let provider: ApiKeyProvider;
 
   if (fallbackModel) {
     // Use the fallback model directly
@@ -80,6 +80,9 @@ export function getTitleGenerationModel(config: TitleGenerationConfig): {
     } else if (apiKeys.anthropic) {
       provider = "anthropic";
       modelChoice = "claude-3-5-sonnet-20241022" as ModelType;
+    } else if (apiKeys.amazonBedrock) {
+      provider = "amazonBedrock";
+      modelChoice = "anthropic.claude-3-5-sonnet-20241022-v1:0" as ModelType;
     } else {
       provider = "openrouter";
       modelChoice = "x-ai/grok-3" as ModelType;

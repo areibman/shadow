@@ -1,4 +1,4 @@
-import { ApiKeys, ModelType } from "@repo/types";
+import { ApiKeys, ModelType, ApiKeyProvider } from "@repo/types";
 import { getModelProvider } from "@repo/types";
 
 /**
@@ -24,7 +24,7 @@ export class TaskModelContext {
     return this.apiKeys;
   }
 
-  getProvider(): "anthropic" | "openai" | "openrouter" /* | "ollama" */ {
+  getProvider(): ApiKeyProvider {
     return getModelProvider(this.mainModel);
   }
 

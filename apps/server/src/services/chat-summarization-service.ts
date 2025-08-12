@@ -2,7 +2,7 @@ import { generateText } from "ai";
 import { TextPart, ToolCallPart, ToolResultPart } from "ai";
 import { ModelProvider } from "@/agent/llm/models/model-provider";
 import { TaskModelContext } from "@/services/task-model-context";
-import { ModelType, getModelProvider } from "@repo/types";
+import { ModelType, getModelProvider, ApiKeyProvider } from "@repo/types";
 import { AssistantMessagePart, ReasoningPart } from "@repo/types";
 import { ChatService } from "@/agent/chat";
 
@@ -15,9 +15,7 @@ export class ChatSummarizationService {
     this.chatService = new ChatService();
   }
 
-  private getHardcodedMiniModel(
-    provider: "anthropic" | "openai" | "openrouter"
-  ): ModelType | null {
+  private getHardcodedMiniModel(provider: ApiKeyProvider): ModelType | null {
     switch (provider) {
       case "anthropic":
         return "claude-3-5-haiku-20241022";
@@ -25,6 +23,8 @@ export class ChatSummarizationService {
         return "gpt-4o-mini";
       case "openrouter":
         return "x-ai/grok-3";
+      case "amazonBedrock":
+        return "anthropic.claude-3-5-haiku-20241022-v1:0";
       default:
         return null;
     }
@@ -78,9 +78,7 @@ ${processedContent}
 
       // Get mini model for summarization
       const provider = getModelProvider(context.getMainModel());
-      const miniModel = this.getHardcodedMiniModel(
-        provider as "anthropic" | "openai" | "openrouter"
-      );
+      const miniModel = this.getHardcodedMiniModel(provider);
       if (!miniModel) {
         throw new Error(`No mini model found for provider ${provider}`);
       }
